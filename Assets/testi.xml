@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<LandXML xmlns="http://buildingsmart.fi/inframodel/404" xmlns:im="http://buildingsmart.fi/im/404" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://buildingsmart.fi/inframodel/404 https://buildingsmart.fi/infra/schema/4.0.4/inframodel.xsd http://buildingsmart.fi/im/404 https://buildingsmart.fi/infra/schema/4.0.4/im.xsd" version="1.2" date="2021-08-23" time="07:55:20" language="finnish" readOnly="false">
+	<Units>
+		<Metric areaUnit="squareMeter" linearUnit="meter" volumeUnit="cubicMeter" temperatureUnit="celsius" pressureUnit="HPA" diameterUnit="meter" widthUnit="meter" heightUnit="meter" velocityUnit="kilometersPerHour" angularUnit="grads" directionUnit="grads" elevationUnit="meter"/>
+	</Units>
+	<CoordinateSystem horizontalCoordinateSystemName="" rotationAngle="0" verticalCoordinateSystemName=""/>
+	<FeatureDictionary name="inframodel" version="4.0.4">
+		<DocFileRef name="Inframodel extensions" location="https://buildingsmart.fi/infra/inframodel/pages/extensions.html"/>
+	</FeatureDictionary>
+	<Project name="hautakangas.xml" desc="hautakangas.xml">
+		<Feature code="IM_codings" source="inframodel">
+			<Property label="terrainCoding" value="Infra"/>
+			<Property label="surfaceCoding" value="InfraBIM"/>
+			<Property label="infraCoding" value="InfraBIM"/>
+			<Property label="proprietaryInfraCoding" value=""/>
+		</Feature>
+	</Project>
+	<Application name="3D-Win" manufacturer="Novatron Oy" version="6.7.1" manufacturerURL="https://3d-system.fi" timeStamp="2021-08-23T07:55:20+02:00">
+		<Author createdBy="" createdByEmail="" company="" companyURL=""/>
+	</Application>
+	<Surfaces name="201000_VALMIS_PINTA">
+		<Surface name="Ylin yhdistelmapinta" desc="Ylin yhdistelmäpinta">
+			<SourceData/>
+			<Definition surfType="TIN">
+				<Pnts>
+					<P id="6571">0 0 0</P>
+					<P id="6572">1 0 0</P>
+					<P id="6573">0 1 0</P>
+					<P id="6574">1 1 0</P>
+				</Pnts>
+				<Faces>
+					<F n="0 0 4" b="2">0 2 1</F>
+					<F n="4 0 5" b="2">2 3 1</F>
+				</Faces>
+			</Definition>
+			<Feature code="IM_coding" source="inframodel">
+				<Property label="surfaceCoding" value="Ylin yhdistelmäpinta"/>
+				<Property label="surfaceCodingDesc" value="Ylin yhdistelmäpinta"/>
+				<Property label="proprietaryInfraCoding" value="Ylin yhdistelmäpinta"/>
+				<Property label="proprietaryInfraCodingDesc" value="Ylin yhdistelmäpinta"/>
+			</Feature>
+		</Surface>
+	</Surfaces>
+</LandXML>
