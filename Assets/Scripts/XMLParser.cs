@@ -3,63 +3,68 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
+using g3;
 using UnityEngine;
 
 public class XMLParser : MonoBehaviour
 {
-    [SerializeField] private string documentPath;
-    [SerializeField] private Vector3 offset;
-
-    private List<Vector3> vertices = new List<Vector3>();
+    public Material wireframeMat;
+    public Material shadedMat;
+    
+    [SerializeField] private string documentPath = "./Assets/XXX.xml";
+    
+    private Vector3d offset;
+    private List<Vector3d> vertices = new List<Vector3d>();
     private List<int> triangles = new List<int>();
-
+    private GameObject meshGO;
+    private MeshRenderer renderer;
 
     private void Start()
     {
+        #if !UNITY_EDITOR
+
+        documentPath = Application.streamingAssetsPath + "\\data.xml";
+        
+        #endif
         ParseVertsAndTris(documentPath);
         
         Debug.Log("Vertices: " + vertices.Count);
         Debug.Log("Triangles: " + triangles.Count);
 
-        foreach (int triangle in triangles)
-        {
-            Debug.Log("testing " + triangle + " of " + vertices.Count);
-            Debug.Log(vertices[triangle]);
-        }
-        
-        MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        meshRenderer.sharedMaterial = new Material(Shader.Find("Standard"));
+        Debug.Log(vertices[0]);
 
-        MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
+        Vector3d[] normals = new Vector3d[vertices.Count];
+        DMesh3 mesh = DMesh3Builder.Build(vertices, triangles, normals);
 
-        Mesh mesh = new Mesh
-        {
-            vertices = vertices.ToArray(),
-            triangles = triangles.ToArray()
-        };
+        MeshNormals.QuickCompute(mesh);
 
-        /*
-        Vector3[] normals = new Vector3[4]
-        {
-            -Vector3.forward,
-            -Vector3.forward,
-            -Vector3.forward,
-            -Vector3.forward
-        };
-        mesh.normals = normals;
+        meshGO = g3UnityUtils.CreateMeshGO("Model", mesh, Colorf.White);
 
-        Vector2[] uv = new Vector2[4]
-        {
-            new Vector2(0, 0),
-            new Vector2(1, 0),
-            new Vector2(0, 1),
-            new Vector2(1, 1)
-        };
-        mesh.uv = uv;*/
+        renderer = meshGO.GetComponent<MeshRenderer>();
 
-        meshFilter.mesh = mesh;
+        //IOWriteResult result = StandardMeshWriter.WriteFile(outputPath,
+        //    new List<WriteMesh>() { new WriteMesh(mesh) }, WriteOptions.Defaults);
+        //
+        //Debug.Log(result.message);
+
+        //meshFilter.mesh = mesh;
     }
-    
+
+    private bool isWireframe;
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M)) isWireframe = !isWireframe;
+
+        if (isWireframe)
+        {
+            renderer.material = wireframeMat;
+        }
+        else
+        {
+            renderer.material = shadedMat;
+        }
+    }
+
     private void ParseVertsAndTris(string path)
     {
         // Open the XML-doc
@@ -84,14 +89,19 @@ public class XMLParser : MonoBehaviour
         {
             string point = node.InnerText;
             string[] parts = point.Split(' ');
-    
-            if (node.Attributes == null) continue;
             
-            float x = float.Parse(parts[0], CultureInfo.InvariantCulture);
-            float y = float.Parse(parts[1], CultureInfo.InvariantCulture);
-            float z = float.Parse(parts[2], CultureInfo.InvariantCulture);
+            double x = double.Parse(parts[0], CultureInfo.InvariantCulture);
+            double y = double.Parse(parts[1], CultureInfo.InvariantCulture);
+            double z = double.Parse(parts[2], CultureInfo.InvariantCulture);
+
+            if (node == pNodes[0])
+            {
+                offset.x = -x;
+                offset.y = -y;
+                offset.z = -z;
+            }
         
-            vertices.Add(new Vector3(x + offset.x, z + offset.y, y + offset.z));
+            vertices.Add(new Vector3d(x + offset.x, z + offset.z, y + offset.y));
         }
         
         foreach (XmlNode node in fNodes)
@@ -104,79 +114,4 @@ public class XMLParser : MonoBehaviour
             triangles.Add(int.Parse(parts[2]) - 1);
         }
     }
-
-    /*
-    private static List<Face> ParseFaces(string path)
-    {
-        Dictionary<int, Vector3> points = new Dictionary<int, Vector3>();
-        List<Face> faces = new List<Face>();
-    
-        // Open the XML-doc
-        XmlDocument xDoc = new XmlDocument();
-        try
-        {
-            xDoc.Load(path);
-        }
-        catch (Exception ex)
-        {
-            Debug.Log(ex);
-        }
-        
-        // Get the "Point" and "Face" -nodes.
-        XmlNodeList pNodes = xDoc.GetElementsByTagName("P");
-        XmlNodeList fNodes = xDoc.GetElementsByTagName("F");
-        
-        
-        foreach (XmlNode node in pNodes)
-        {
-            string point = node.InnerText;
-            string[] parts = point.Split(' ');
-    
-            if (node.Attributes == null) continue;
-            
-            int id = int.Parse(node.Attributes[0].InnerText);
-            
-            float x = float.Parse(parts[0], CultureInfo.InvariantCulture);
-            float y = float.Parse(parts[1], CultureInfo.InvariantCulture);
-            float z = float.Parse(parts[2], CultureInfo.InvariantCulture);
-        
-            points.Add(id, new Vector3(x, y, z));
-        }
-        
-        foreach (XmlNode node in fNodes)
-        {
-            string face = node.InnerText;
-            string[] parts = face.Split(' ');
-        
-            int id1 = int.Parse(parts[0]);
-            int id2 = int.Parse(parts[1]);
-            int id3 = int.Parse(parts[2]);
-            Vector3 p1 = points[id1];
-            Vector3 p2 = points[id2];
-            Vector3 p3 = points[id3];
-        
-            faces.Add(new Face(p1, p2, p3));
-        }
-    
-        return faces;
-    }
-
-    public class Face
-    {
-        public Vector3 p1 { get; private set; }
-        public Vector3 p2 { get; private set; }
-        public Vector3 p3 { get; private set; }
-
-        public Face(Vector3 p1, Vector3 p2, Vector3 p3)
-        {
-            this.p1 = p1;
-            this.p2 = p2;
-            this.p3 = p3;
-        }
-
-        public string GetAsString()
-        {
-            return "p1: " + p1 + ", p2: " + p2 + ", p3: " + p3;
-        }
-    }*/
 }

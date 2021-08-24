@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<LandXML xmlns="http://buildingsmart.fi/inframodel/404" xmlns:im="http://buildingsmart.fi/im/404" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://buildingsmart.fi/inframodel/404 https://buildingsmart.fi/infra/schema/4.0.4/inframodel.xsd http://buildingsmart.fi/im/404 https://buildingsmart.fi/infra/schema/4.0.4/im.xsd" version="1.2" date="2021-08-24" time="09:59:40" language="finnish" readOnly="false">
+	<Units>
+		<Metric areaUnit="squareMeter" linearUnit="meter" volumeUnit="cubicMeter" temperatureUnit="celsius" pressureUnit="HPA" diameterUnit="meter" widthUnit="meter" heightUnit="meter" velocityUnit="kilometersPerHour" angularUnit="grads" directionUnit="grads" elevationUnit="meter"/>
+	</Units>
+	<CoordinateSystem horizontalCoordinateSystemName="" rotationAngle="0" verticalCoordinateSystemName=""/>
+	<FeatureDictionary name="inframodel" version="4.0.4">
+		<DocFileRef name="Inframodel extensions" location="https://buildingsmart.fi/infra/inframodel/pages/extensions.html"/>
+	</FeatureDictionary>
+	<Project name="kolme_kolmiota.mm.xml" desc="kolme_kolmiota.mm.xml">
+		<Feature code="IM_codings" source="inframodel">
+			<Property label="terrainCoding" value="Infra"/>
+			<Property label="surfaceCoding" value="InfraBIM"/>
+			<Property label="infraCoding" value="InfraBIM"/>
+			<Property label="proprietaryInfraCoding" value=""/>
+		</Feature>
+	</Project>
+	<Application name="3D-Win" manufacturer="Novatron Oy" version="6.7.1" manufacturerURL="https://3d-system.fi" timeStamp="2021-08-24T09:59:40+02:00">
+		<Author createdBy="" createdByEmail="" company="" companyURL=""/>
+	</Application>
+	<Surfaces name="kolme_kolmiota">
+		<Surface name="Maanpinta" desc="Maanpinta">
+			<SourceData/>
+			<Definition surfType="TIN">
+				<Pnts>
+					<P id="1">0.000000 0.000000 0.000000</P>
+					<P id="2">0.000000 1.000000 0.000000</P>
+					<P id="3">1.000000 0.000000 1.000000</P>
+					<P id="4">1.066000 1.367000 2.000000</P>
+					<P id="5">1.777000 0.831000 1.000000</P>
+				</Pnts>
+				<Faces>
+					<F n="0 0 2">3 1 2</F>
+					<F n="1 0 3">3 2 4</F>
+					<F n="0 2 0">5 3 4</F>
+				</Faces>
+			</Definition>
+			<Feature code="IM_coding" source="inframodel">
+				<Property label="surfaceCoding" value="1"/>
+				<Property label="surfaceCodingDesc" value="Maanpinta"/>
+				<Property label="proprietaryInfraCoding" value="1"/>
+				<Property label="proprietaryInfraCodingDesc" value="Maanpinta"/>
+			</Feature>
+		</Surface>
+	</Surfaces>
+</LandXML>
